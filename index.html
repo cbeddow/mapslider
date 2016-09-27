@@ -6,6 +6,7 @@
     <title>Leaflet Side-by-side</title>
     <script src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet-src.js'></script>
     <script src="leaflet-side-by-side.js"></script>
+    <script src="Leaflet.MapboxVectorTile.min.js"></script>
     <link href='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css' rel='stylesheet' />
     <style>
     body {
@@ -34,6 +35,12 @@
 
     //adds OSM/Carto layer base layer
     L.tileLayer(CDB_URL, {attribution: ATTR}).addTo(map);
+    var config = {
+    url: "https://d2munx5tg0hw47.cloudfront.net/tiles/{z}/{x}/{y}.mapbox"
+    };
+    var mapillarySource = new L.TileLayer.MVTSource(config);
+    mapillarySource.addTo(map);
+
 
 //adds google streetview tile
     var gsvLayer = L.tileLayer('https://mts1.googleapis.com/vt?hl=en-US&lyrs=svv|cb_client:apiv3&style=40,19&x={x}&y={y}&z={z}', {
@@ -41,19 +48,13 @@
     }).addTo(map);
 
 //non-functioning, because adds an empty tile layer but using Mapillary vector link
-    var mlyLayer = L.tileLayer('https://d2munx5tg0hw47.cloudfront.net/tiles/{z}/{x}/{y}.mapbox', {
+  /*  var mlyLayer = L.tileLayer('https://d2munx5tg0hw47.cloudfront.net/tiles/{z}/{x}/{y}.mapbox', {
         attribution: '©Mapillary'
-    }).addTo(map);
+    }).addTo(map); */
 
-/*
-    var config = {
-  url: "https://d2munx5tg0hw47.cloudfront.net/tiles/{z}/{x}/{y}.mapbox"
-};
-var mapillarySource = new L.TileLayer.MVTSource(config);
-map.addLayer(mapillarySource);
-*/
 
-    L.control.sideBySide(gsvLayer, mlyLayer).addTo(map); //adds slider
+
+    L.control.sideBySide(gsvLayer, mapillarySource).addTo(map); //adds slider
     </script>
 </body>
 </html>
