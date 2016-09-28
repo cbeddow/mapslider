@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=utf-8 />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui' />
+    <title>Leaflet Side-by-side</title>
+    <script src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet-src.js'></script>
+    <script src="leaflet-side-by-side.js"></script>
+    <script src="Leaflet.MapboxVectorTile.min.js"></script>
+    <link href='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css' rel='stylesheet' />
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+    }
+    </style>
+</head>
+
+<body>
+    <div id='map'></div>
+
+    <script>
+    var map = L.map('map').setView([42.505, -0.09], 2);
+    //limit zoom because of vector tile limits
+    map.options.minZoom = 2;
+    map.options.maxZoom = 14;
+
+
+
+    ATTR = '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a> | ' +
+'&copy; <a href="http://carto.com/attributions">Carto</a> | ' +
+'&copy; <a href="http://mapillary.com">Mapillary</a>  | ' + 'Map data ©2016 Google';
+    CDB_URL = 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+
+    //adds OSM/Carto layer base layer
+    L.tileLayer(CDB_URL, {attribution: ATTR}).addTo(map);
+    var mlystyle = {
+        "opacity": 0.3};
+/*
+        //modifies config options for Mapillary vector tile layer
+    var config = {
+    url: "http://d25uarhxywzl1j.cloudfront.net/v0.1/{z}/{x}/{y}.mvt", style: function (feature) {
+  var style = {};
+  var type = feature.type;
+  switch (type) {
+    case 1: //'Point'
+      style.color = 'rgba(0,204,102,.1)';
+      style.radius = 3;
+      style.selected = {
+        color: 'rgba(255,255,0,0.5)',
+        radius: 6
+      };
+      break;
+    case 2: //'LineString'
+      style.color = 'rgba(0,204,102,.3)';
+      style.size = 0;
+      style.selected = {
+        color: 'rgba(255,25,0,0.5)',
+        size: 4
+      };
+      break;
+    case 3: //'Polygon'
+      style.color = 'rgba(255,79,79,.2)';
+      style.outline = {
+        color: 'rgb(20,20,20)',
+        size: 1
+      };
+      style.selected = {
+        color: 'rgba(255,140,0,0.3)',
+        outline: {
+          color: 'rgba(255,140,0,1)',
+          size: 2
+        }
+      };
+      break;
+  }
+//this seems useless but can't delete it without messing up the display
+  if (feature.layer.name === 'gaul_2014_adm1_label') {
+    style.ajaxSource = function(mvtFeature) {
+      var id = mvtFeature.id;
+      return 'http://localhost:8888/fsp/2014/fsp/aggregations-no-name/' + id + '.json';
+    };
+//same as above function
+    style.staticLabel = function(mvtFeature, ajaxData) {
+      var style = {
+        html: ajaxData.total_count,
+        iconSize: [33,33],
+        cssClass: 'label-icon-number',
+        cssSelectedClass: 'label-icon-number-selected'
+      };
+      return style;
+    };
+  }
+
+  return style;
+}};
+
+//add Mapillary vector tiles to map using above config options
+    var mapillarySource = new L.TileLayer.MVTSource(config, {
+            style: mlystyle});
+    mapillarySource.setStyle(mlystyle);
+    mapillarySource.addTo(map);
+*/
+
+//adds google streetview tile
+    var gsvLayer = L.tileLayer('https://mts1.googleapis.com/vt?hl=en-US&lyrs=svv|cb_client:apiv3&style=40,8&x={x}&y={y}&z={z}', {
+        opacity: 0.5,
+        zIndex: 0
+
+    }).addTo(map);
+
+    var mlyLayer = L.tileLayer('http://{s}.tiles.mapillary.com/{z}/{x}/{y}', {
+      opacity: .5,
+      zIndex: 1000
+    }).addTo(map);
+
+
+
+    L.control.sideBySide(gsvLayer, mlyLayer).addTo(map); //adds slider
+    </script>
+</body>
+</html>
