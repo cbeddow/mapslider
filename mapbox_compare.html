@@ -163,7 +163,8 @@ beforeMap.addControl(new mapboxgl.Geocoder());
 beforeMap.addControl(nav1);
 
 var map = new mapboxgl.Compare(beforeMap, afterMap);
-
+beforeMap.doubleClickZoom.enable();
+afterMap.doubleClickZoom.enable();
 //modal popup here
 
 // Get the modal
